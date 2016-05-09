@@ -23,7 +23,7 @@ public class MainLoop {
 		GUI equis = new GUI("botones/equis", 0, 0, "equis");
 		equis.setY(cuadrado.getY() - (equis.getY2() / 2));
 		equis.setX(cuadrado.getX2());
-		GUI circulo = new GUI("botones/circulo", 0, 0, "circulo", 300);
+		GUI circulo = new GUI("botones/circulo", 0, 0, "circulo");
 		circulo.setX(pt.getWidth() - circulo.getX2());
 		circulo.setY(cuadrado.getY() - (circulo.getY2() / 2));
 		
@@ -34,7 +34,7 @@ public class MainLoop {
 	}
 	
 	private static void cargarPJ() {
-		EntidadControlable pj = new EntidadControlable("sprites/pj");		
+		EntidadControlable pj = new EntidadControlable("sprites/pj", 8, 10);		
 		pt.meterEntidadControlable(pj);
 	}
 }

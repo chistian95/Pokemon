@@ -1,7 +1,7 @@
 package entidades;
 
 public class EntidadControlable extends Entidad {
-	private static final int VELOCIDAD = 20;
+	private static final int VELOCIDAD = 10;
 	
 	private int sx;
 	private int escala;
@@ -9,10 +9,10 @@ public class EntidadControlable extends Entidad {
 	private int animacion;
 	private int pasos;
 
-	public EntidadControlable(String archivo) {
-		super(archivo, 0, 0);
+	public EntidadControlable(String archivo, int x, int y) {
+		super(archivo, x, y);
 		sx = 0;
-		escala = 10;
+		escala = 8;
 		cont = 0;
 		animacion = 0;
 		pasos = 0;

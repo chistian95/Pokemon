@@ -63,6 +63,8 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		bf.getGraphics().drawImage(fondo.getNubes(), fondo.getX(), 0, this);
 		fondo.moverNubes();
 		
+		bf.getGraphics().drawImage(terreno.getMontes().getImagen(), terreno.getMontes().getX(), 0, this);
+		bf.getGraphics().drawImage(terreno.getBosque().getImagen(), terreno.getBosque().getX(), 0, this);
 		bf.getGraphics().drawImage(terreno.getImagen(), terreno.getX(), 0, this);
 		
 		for(Entidad entidad : entidades) {				
@@ -78,8 +80,8 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 				mov = true;
 			}
 			int escala = entidad.getEscala();
-			int dx1 = this.getWidth()/2 - (8*escala);
-			int dy1 = this.getHeight()/2 - (10*escala) + 175;
+			int dx1 = this.getWidth()/2 - (entidad.getX()*escala);
+			int dy1 = this.getHeight()/2 - (entidad.getY()*escala) + 200;
 			int dx2 = (dx1 + (16*escala));
 			int dy2 = (dy1 + (20*escala));
 			int sx1 = entidad.getSx();
