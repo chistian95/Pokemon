@@ -5,11 +5,17 @@ import entidades.GUI;
 import pantalla.Pantalla;
 
 public class MainLoop {
+	private static Pantalla pt;
 	public static void main(String[] args) {
-		Pantalla pt = new Pantalla();
+		pt = new Pantalla();
 		Thread trPt = new Thread(pt);
 		trPt.start();
 		
+		cargarGUI();
+		cargarPJ();
+	}
+	
+	private static void cargarGUI() {
 		GUI cuadrado = new GUI("botones/cuadrado", 0, 0, "cuadrado");
 		cuadrado.setY(pt.getHeight() - cuadrado.getY2());
 		GUI triangulo = new GUI("botones/triangulo", 0, 0, "triangulo");
@@ -21,12 +27,14 @@ public class MainLoop {
 		circulo.setX(pt.getWidth() - circulo.getX2());
 		circulo.setY(cuadrado.getY() - (circulo.getY2() / 2));
 		
-		EntidadControlable pj = new EntidadControlable("sprites/pj", 0, 0);
-		
 		pt.meterGUI(cuadrado);
 		pt.meterGUI(triangulo);
 		pt.meterGUI(equis);
 		pt.meterGUI(circulo);
+	}
+	
+	private static void cargarPJ() {
+		EntidadControlable pj = new EntidadControlable("sprites/pj");		
 		pt.meterEntidadControlable(pj);
 	}
 }

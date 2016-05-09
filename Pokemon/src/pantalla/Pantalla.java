@@ -18,6 +18,7 @@ import entidades.Entidad;
 import entidades.EntidadControlable;
 import entidades.Fondo;
 import entidades.GUI;
+import entidades.Terreno;
 
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
@@ -30,6 +31,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	private List<EntidadControlable> controlables;
 	private boolean[] raton;
 	private Fondo fondo;
+	private Terreno terreno;
 	
 	public Pantalla() {
 		entidades = new ArrayList<Entidad>();
@@ -37,6 +39,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		controlables = new ArrayList<EntidadControlable>();
 		raton = new boolean[2];
 		fondo = new Fondo();
+		terreno = new Terreno();
 		addKeyListener(this);
 		addMouseListener(this);
 		
@@ -60,17 +63,23 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		bf.getGraphics().drawImage(fondo.getNubes(), fondo.getX(), 0, this);
 		fondo.moverNubes();
 		
+		bf.getGraphics().drawImage(terreno.getImagen(), terreno.getX(), 0, this);
+		
 		for(Entidad entidad : entidades) {				
 			bf.getGraphics().drawImage(entidad.getImagen(), entidad.getX(), entidad.getY(), this);
 		}
 		
+		boolean mov = false;
 		for(EntidadControlable entidad : controlables) {
-			if(entidad.getEstado() == 1) {
-				entidad.animacion();
+			if(entidad.getPasos() > 0) {
+				entidad.animacion();			
+			}
+			if(entidad.getAnimacion() > 0) {
+				mov = true;
 			}
 			int escala = entidad.getEscala();
 			int dx1 = this.getWidth()/2 - (8*escala);
-			int dy1 = this.getHeight()/2 - (10*escala);
+			int dy1 = this.getHeight()/2 - (10*escala) + 175;
 			int dx2 = (dx1 + (16*escala));
 			int dy2 = (dy1 + (20*escala));
 			int sx1 = entidad.getSx();
@@ -78,6 +87,9 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 			int sx2 = sx1+16;
 			int sy2 = sy1+20;
 			bf.getGraphics().drawImage(entidad.getImagen(), dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, this);
+		}
+		if(mov) {
+			terreno.moverTerreno();
 		}
 		
 		for(GUI gui : guis) {
@@ -121,7 +133,6 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	}
 	
 	private void accionBoton(GUI boton) {
-		System.out.println(boton.getAccion());
 		if(boton.getAccion().equals("circulo")) {
 			for(EntidadControlable en : controlables) {
 				if(en.getPasos() <= 1) {

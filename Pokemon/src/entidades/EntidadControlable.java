@@ -7,24 +7,19 @@ public class EntidadControlable extends Entidad {
 	private int escala;
 	private int cont;
 	private int animacion;
-	private int estado;
 	private int pasos;
 
-	public EntidadControlable(String archivo, int x, int y) {
-		super(archivo, x, y);
+	public EntidadControlable(String archivo) {
+		super(archivo, 0, 0);
 		sx = 0;
 		escala = 10;
 		cont = 0;
 		animacion = 0;
-		estado = 0;
 		pasos = 0;
 	}
 	
 	public void animar() {
 		pasos += 3;
-		if(pasos > 0) {
-			estado = 1;
-		}
 	}
 	
 	public void animacion() {
@@ -39,7 +34,6 @@ public class EntidadControlable extends Entidad {
 	}
 	
 	private void pararAnimacion() {
-		estado = 0;
 		animacion = 0;
 		pasos = 0;
 		sx = 0;
@@ -47,7 +41,6 @@ public class EntidadControlable extends Entidad {
 	
 	private void cambiarAnimacion() {
 		animacion = animacion%2 + 1;
-		System.out.println(animacion);
 		sx = 16*animacion;
 	}
 	
@@ -59,11 +52,11 @@ public class EntidadControlable extends Entidad {
 		return escala;
 	}
 	
-	public int getEstado() {
-		return estado;
-	}
-	
 	public int getPasos() {
 		return pasos;
+	}
+	
+	public int getAnimacion() {
+		return animacion;
 	}
 }
