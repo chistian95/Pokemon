@@ -15,7 +15,9 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import entidades.Entidad;
+import entidades.EntidadControlable;
 import entidades.Fondo;
+import entidades.GUI;
 
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
@@ -25,12 +27,14 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	private List<Entidad> entidades;
 	private List<GUI> guis;
+	private List<EntidadControlable> controlables;
 	private boolean[] raton;
 	private Fondo fondo;
 	
 	public Pantalla() {
 		entidades = new ArrayList<Entidad>();
 		guis = new ArrayList<GUI>();
+		controlables = new ArrayList<EntidadControlable>();
 		raton = new boolean[2];
 		fondo = new Fondo();
 		addKeyListener(this);
@@ -48,22 +52,6 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
         });
 	}
 	
-	public void meterEntidad(Entidad en) {
-		entidades.add(en);
-	}
-	
-	public void quitarEntidad(Entidad en) {
-		entidades.remove(en);
-	}
-	
-	public void meterGUI(GUI gui) {
-		guis.add(gui);
-	}
-	
-	public void quitarGUI(GUI gui) {
-		guis.remove(gui);
-	}
-	
 	public void paint(Graphics g) {
 		BufferedImage bf = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		super.paint(bf.getGraphics());
@@ -74,6 +62,22 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		
 		for(Entidad entidad : entidades) {				
 			bf.getGraphics().drawImage(entidad.getImagen(), entidad.getX(), entidad.getY(), this);
+		}
+		
+		for(EntidadControlable entidad : controlables) {
+			if(entidad.getEstado() == 1) {
+				entidad.animacion();
+			}
+			int escala = entidad.getEscala();
+			int dx1 = this.getWidth()/2 - (8*escala);
+			int dy1 = this.getHeight()/2 - (10*escala);
+			int dx2 = (dx1 + (16*escala));
+			int dy2 = (dy1 + (20*escala));
+			int sx1 = entidad.getSx();
+			int sy1 = 0;
+			int sx2 = sx1+16;
+			int sy2 = sy1+20;
+			bf.getGraphics().drawImage(entidad.getImagen(), dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, this);
 		}
 		
 		for(GUI gui : guis) {
@@ -118,6 +122,13 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	private void accionBoton(GUI boton) {
 		System.out.println(boton.getAccion());
+		if(boton.getAccion().equals("circulo")) {
+			for(EntidadControlable en : controlables) {
+				if(en.getPasos() <= 1) {
+					en.animar();
+				}				
+			}
+		}
 	}
 
 	//TECLADO
@@ -215,5 +226,29 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
+	}
+	
+	public void meterEntidad(Entidad en) {
+		entidades.add(en);
+	}
+	
+	public void quitarEntidad(Entidad en) {
+		entidades.remove(en);
+	}
+	
+	public void meterGUI(GUI gui) {
+		guis.add(gui);
+	}
+	
+	public void quitarGUI(GUI gui) {
+		guis.remove(gui);
+	}
+	
+	public void meterEntidadControlable(EntidadControlable en) {
+		controlables.add(en);
+	}
+	
+	public void quitarEntidadControlable(EntidadControlable en) {
+		controlables.remove(en);
 	}
 }
