@@ -11,7 +11,7 @@ public class AnimacionBatalla {
 	private double cont;
 	
 	public AnimacionBatalla(Pantalla pt) {
-		ImageIcon img = new ImageIcon("src/res/pokeball.png");
+		ImageIcon img = new ImageIcon("src/res/combate/pokeball.png");
 		imagen = img.getImage();
 
 		cont = 0.01;

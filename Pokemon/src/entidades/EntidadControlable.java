@@ -3,21 +3,19 @@ package entidades;
 import pantalla.Pantalla;
 
 public class EntidadControlable extends Entidad {
-	private static final int VELOCIDAD = 20;
+	private static final int VELOCIDAD = 10;
 	private static final int PROB_ENEMIGO = 100;
 	
 	private int sx;
-	private int escala;
 	private int cont;
 	private int animacion;
 	private int pasos;
 	private boolean enemigoSpawneado;
-	private EntidadAnimada enemigo;
+	private Entidad enemigo;
 
 	public EntidadControlable(String archivo, int x, int y, Pantalla pt) {
-		super(archivo, x, y, pt);
+		super(archivo, x, y, 4, pt);
 		sx = 0;
-		escala = 7;
 		cont = 0;
 		animacion = 0;
 		pasos = 0;
@@ -28,8 +26,9 @@ public class EntidadControlable extends Entidad {
 		pasos += 3;
 		double rnd = Math.random()*100;
 		if(!enemigoSpawneado && rnd < PROB_ENEMIGO) {
-			enemigo = new EntidadAnimada("pokemon/caterpie", -300, getPantalla().getHeight()-150);	
-			getPantalla().meterEntidadAnimada(enemigo);
+			int escala = 1;
+			enemigo = new Entidad("pokemon/caterpie", -150, getPantalla().getHeight()-130, escala, getPantalla());	
+			getPantalla().meterEntidad(enemigo);
 			enemigoSpawneado = true;				
 		}
 	}
@@ -37,11 +36,11 @@ public class EntidadControlable extends Entidad {
 	public void animacion() {
 		if(animacion != 0) {
 			if(enemigoSpawneado) {
-				enemigo.moverEntidad();
-				if(enemigo.getX() >= getX()) {
+				enemigo.moverConSuelo();
+				if(enemigo.getX()+enemigo.getImagen().getWidth(null) >= getX()) {
 					pararAnimacion();
 					enemigoSpawneado = false;
-					getPantalla().quitarEntidadAnimada(enemigo);
+					getPantalla().quitarEntidad(enemigo);
 					getPantalla().getJuego().setEstado(1);
 				}
 			}
@@ -71,10 +70,6 @@ public class EntidadControlable extends Entidad {
 		return sx;
 	}
 	
-	public int getEscala() {
-		return escala;
-	}
-	
 	public int getPasos() {
 		return pasos;
 	}
@@ -87,7 +82,7 @@ public class EntidadControlable extends Entidad {
 		return enemigoSpawneado;
 	}
 	
-	public EntidadAnimada getEnemigo() {
+	public Entidad getEnemigo() {
 		return enemigo;
 	}
 }

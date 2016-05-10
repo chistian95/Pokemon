@@ -7,23 +7,23 @@ public class Terreno extends Entidad {
 	private Entidad bosque;
 
 	public Terreno(Pantalla pt) {
-		super("fondo/suelo", 1280, 0, pt);
-		bosque = new Entidad("fondo/suelo2", 1280, 0, pt);
-		monte = new Entidad("fondo/montes", 1280, 0, pt);
+		super("fondo/suelo", 720, 0, pt);
+		bosque = new Entidad("fondo/suelo2", 720, 0, pt);
+		monte = new Entidad("fondo/montes", 720, 0, pt);
 	}
 	
 	public void moverTerreno() {
 		setX(getX()-4);
 		if(getX() <= 0) {
-			setX(1280);
+			setX(720);
 		}
 		bosque.setX(bosque.getX()-3);
 		if(bosque.getX() <= 0) {
-			bosque.setX(1280);
+			bosque.setX(720);
 		}
 		monte.setX(monte.getX()-2);
 		if(monte.getX() <= 0) {
-			monte.setX(1280);
+			monte.setX(720);
 		}
 	}
 	
