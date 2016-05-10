@@ -1,6 +1,7 @@
 package pantalla;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,30 +19,36 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import entidades.Entidad;
+import entidades.EntidadAnimada;
 import entidades.EntidadControlable;
 import entidades.GUI;
+import principal.AnimacionBatalla;
+import principal.Juego;
 
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 1280;	//720, 1280;
 	private static final int HEIGHT = 720;	//480, 720;
 	
-	BufferedImage bf;
-	private List<Entidad> entidades;
+	private Juego jg;
+	private BufferedImage bf;
+	private List<EntidadAnimada> animadas;
 	private List<GUI> guis;
 	private List<EntidadControlable> controlables;
 	private boolean[] raton;
 	private Fondo fondo;
 	private Terreno terreno;
+	private AnimacionBatalla animBat;
 	
-	public Pantalla() {
-		entidades = new ArrayList<Entidad>();
+	public Pantalla(Juego jg) {
+		this.jg = jg;
+		animadas = new ArrayList<EntidadAnimada>();
 		guis = new ArrayList<GUI>();
 		controlables = new ArrayList<EntidadControlable>();
 		raton = new boolean[2];
 		fondo = new Fondo();
-		terreno = new Terreno();
+		terreno = new Terreno(this);
+		animBat = null;
 		
         setUndecorated(true);
         setSize(WIDTH, HEIGHT);
@@ -61,8 +69,51 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
         });
 	}
 	
+	
 	public void paint(Graphics g) {
-		Graphics bff = bf.getGraphics();
+		switch(jg.getEstado()) {
+		case -1:
+			break;
+		case 0:
+			pintarMundo(g);
+			break;
+		case 1:
+			pintarBatallaAnimacion(g);
+			break;
+		}	
+	}
+	
+	private void pintarBatallaAnimacion(Graphics g) {
+		Graphics2D bff = (Graphics2D) bf.getGraphics();
+		
+		if(animBat == null) {
+			animBat = new AnimacionBatalla(this);
+		}
+		
+		double escala = animBat.getCont();
+		int width = animBat.getImagen().getWidth(this)/2;
+		int height = animBat.getImagen().getHeight(this)/2;
+		int x1 = getWidth()/2 - (int) (width*escala);
+		int y1 = getHeight()/2 - (int) (height*escala);
+		
+		if(escala <= 2.125) {
+			AffineTransform trans = new AffineTransform();
+			trans.translate(x1, y1);
+			trans.scale(escala, escala);
+			trans.rotate(Math.toRadians(escala*180), width, height);
+			bff.drawImage(animBat.getImagen(), trans, this);
+		}
+		animBat.sumarCont();
+		if(escala >= 4) {
+			animBat = null;
+			jg.setEstado(0);
+		}
+		
+		g.drawImage(bf, 0, 0, null);
+	}
+	
+	private void pintarMundo(Graphics g) {
+		Graphics2D bff = (Graphics2D) bf.getGraphics();
 		bff.drawImage(fondo.getCielo(), 0, 0, this.getWidth(), 250, 0, 0, this.getWidth(), 250, this);
 		bff.drawImage(fondo.getNubes(), 0, 0, this.getWidth(), 250, fondo.getX(), 0, fondo.getX()+this.getWidth(), 250, this);
 		fondo.moverNubes();
@@ -71,8 +122,8 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		bff.drawImage(terreno.getBosque().getImagen(), 0, 120, this.getWidth(), this.getHeight(), terreno.getBosque().getX(), 120, terreno.getBosque().getX()+this.getWidth(), this.getHeight(), this);
 		bff.drawImage(terreno.getImagen(), 0, 180, this.getWidth(), this.getHeight(), terreno.getX(), 180, terreno.getX()+this.getWidth(), this.getHeight(), this);
 		
-		for(Entidad entidad : entidades) {				
-			bf.getGraphics().drawImage(entidad.getImagen(), entidad.getX(), entidad.getY(), this);
+		for(EntidadAnimada entidad : animadas) {
+			bff.drawImage(entidad.getImagen(), entidad.getX(), entidad.getY(), this);
 		}
 		
 		boolean mov = false;
@@ -84,8 +135,8 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 				mov = true;
 			}
 			int escala = entidad.getEscala();
-			int dx1 = this.getWidth()/2 - (entidad.getX()*escala);
-			int dy1 = this.getHeight()/2 - (entidad.getY()*escala) + 200;
+			int dx1 = entidad.getX() - 8*escala;
+			int dy1 = entidad.getY() - 10*escala;
 			int dx2 = (dx1 + (16*escala));
 			int dy2 = (dy1 + (20*escala));
 			int sx1 = entidad.getSx();
@@ -101,7 +152,6 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		for(GUI gui : guis) {
 			bff.drawImage(gui.getImagen(), gui.getX(), gui.getY(), this);
 		}
-		
 		g.drawImage(bf, 0, 0, null);
 	}
 	
@@ -133,11 +183,13 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	private void accionBoton(GUI boton) {
 		if(boton.getAccion().equals("circulo")) {
-			for(EntidadControlable en : controlables) {
-				if(en.getPasos() <= 1) {
-					en.animar();
-				}				
-			}
+			if(jg.getEstado() == 0) {
+				for(EntidadControlable en : controlables) {
+					if(en.getPasos() <= 1) {
+						en.animar();
+					}				
+				}
+			}			
 		}
 	}
 
@@ -238,12 +290,12 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		
 	}
 	
-	public void meterEntidad(Entidad en) {
-		entidades.add(en);
+	public void meterEntidadAnimada(EntidadAnimada en) {
+		animadas.add(en);
 	}
 	
-	public void quitarEntidad(Entidad en) {
-		entidades.remove(en);
+	public void quitarEntidadAnimada(EntidadAnimada en) {
+		animadas.remove(en);
 	}
 	
 	public void meterGUI(GUI gui) {
@@ -260,5 +312,9 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	public void quitarEntidadControlable(EntidadControlable en) {
 		controlables.remove(en);
+	}
+	
+	public Juego getJuego() {
+		return jg;
 	}
 }

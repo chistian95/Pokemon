@@ -6,10 +6,10 @@ public class Terreno extends Entidad {
 	private Entidad monte;
 	private Entidad bosque;
 
-	public Terreno() {
-		super("fondo/suelo", 1280, 0);
-		bosque = new Entidad("fondo/suelo2", 1280, 0);
-		monte = new Entidad("fondo/montes", 1280, 0);
+	public Terreno(Pantalla pt) {
+		super("fondo/suelo", 1280, 0, pt);
+		bosque = new Entidad("fondo/suelo2", 1280, 0, pt);
+		monte = new Entidad("fondo/montes", 1280, 0, pt);
 	}
 	
 	public void moverTerreno() {

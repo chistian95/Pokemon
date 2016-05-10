@@ -6,12 +6,21 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import pantalla.Pantalla;
+
 public class Entidad {
 	private int x;
 	private int y;
+	private Pantalla pt;
 	private BufferedImage imagen;
 	
-	public Entidad(String archivo, int x, int y) {
+	public Entidad(int x, int y, Pantalla pt) {
+		this.x = x;
+		this.y = y;
+		this.pt = pt;
+	}
+	
+	public Entidad(String archivo, int x, int y, Pantalla pt) {
 		String imagenUrl = "../res/"+archivo+".png";
         try {
 			imagen = ImageIO.read(getClass().getResourceAsStream(imagenUrl));
@@ -21,6 +30,7 @@ public class Entidad {
 		}
         this.x = x;
         this.y = y;
+        this.pt = pt;
 	}
 
 	public int getX() {
@@ -45,5 +55,9 @@ public class Entidad {
 	
 	public void setImagen(BufferedImage imagen) {
 		this.imagen = imagen;
+	}
+	
+	public Pantalla getPantalla() {
+		return pt;
 	}
 }

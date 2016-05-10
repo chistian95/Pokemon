@@ -8,6 +8,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
+import pantalla.Pantalla;
+
 public class GUI extends Entidad {
 	
 	private String accion;
@@ -16,16 +18,16 @@ public class GUI extends Entidad {
 	private BufferedImage imagen_n;
 	private BufferedImage imagen_p;
 
-	public GUI(String archivo, int x, int y) {
-		this(archivo, x, y, archivo);
+	public GUI(String archivo, int x, int y, Pantalla pt) {
+		this(archivo, x, y, archivo, pt);
 	}
 	
-	public GUI(String archivo, int x, int y, String accion) {
-		this(archivo, x, y, accion, 100);
+	public GUI(String archivo, int x, int y, String accion, Pantalla pt) {
+		this(archivo, x, y, accion, 100, pt);
 	}
 	
-	public GUI(String archivo, int x, int y, String accion, int cooldown) {
-		super(archivo, x, y);
+	public GUI(String archivo, int x, int y, String accion, int cooldown, Pantalla pt) {
+		super(archivo, x, y, pt);
 		try {
 			imagen_n = ImageIO.read(getClass().getResourceAsStream("../res/"+archivo+".png"));
 			imagen_p = ImageIO.read(getClass().getResourceAsStream("../res/"+archivo+"_p.png"));
