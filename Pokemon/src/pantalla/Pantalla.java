@@ -23,6 +23,7 @@ import entidades.EntidadAnimada;
 import entidades.EntidadControlable;
 import entidades.GUI;
 import principal.AnimacionBatalla;
+import principal.EstadoJuego;
 import principal.Juego;
 
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
@@ -72,12 +73,12 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	public void paint(Graphics g) {
 		switch(jg.getEstado()) {
-		case -1:
+		case EstadoJuego.PARADO:
 			break;
-		case 0:
+		case EstadoJuego.MUNDO:
 			pintarMundo(g);
 			break;
-		case 1:
+		case EstadoJuego.ANIM_BATALLA:
 			pintarBatallaAnimacion(g);
 			break;
 		}	
@@ -106,7 +107,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		animBat.sumarCont();
 		if(escala >= 4) {
 			animBat = null;
-			jg.setEstado(0);
+			jg.setEstado(EstadoJuego.MUNDO);
 		}
 		
 		g.drawImage(bf, 0, 0, null);
@@ -183,7 +184,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	private void accionBoton(GUI boton) {
 		if(boton.getAccion().equals("circulo")) {
-			if(jg.getEstado() == 0) {
+			if(jg.getEstado() == EstadoJuego.MUNDO) {
 				for(EntidadControlable en : controlables) {
 					if(en.getPasos() <= 1) {
 						en.animar();
