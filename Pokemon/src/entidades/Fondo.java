@@ -6,11 +6,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Fondo {
-	private static final int VELOCIDAD = 4;
+	private static final int VELOCIDAD = 2;
 	
 	Image cielo;
 	Image nubes;
-	int x;
+	int x = 1240;
 	int cont = 0;
 
 	public Fondo() {
@@ -40,8 +40,8 @@ public class Fondo {
 		if(cont == VELOCIDAD) {
 			x--;
 		}
-		if(x <= -1240) {
-			x = 0;
+		if(x <= 0) {
+			x = 1240;
 		}
 	}
 }
