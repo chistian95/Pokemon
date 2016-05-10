@@ -2,6 +2,8 @@ package pantalla;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import entidades.Entidad;
 import entidades.EntidadControlable;
@@ -22,7 +25,7 @@ import entidades.Terreno;
 
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
-	private static final int REFRESCO = 1000;
+	//private static final int REFRESCO = 1000;
 	private static final int WIDTH = 1280;	//720, 1280;
 	private static final int HEIGHT = 720;	//480, 720;
 	
@@ -103,22 +106,15 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	@Override
 	public void run() {
-		while(true) {
-			long comienzo = System.nanoTime();
-			botones();
-			repaint();
-			long resto = System.nanoTime() - comienzo;
-			long espera = (REFRESCO - resto) / 1000000;
-			if(espera <= 0) {
-				espera = 5;
+		ActionListener listener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				botones();
+				repaint();   
 			}
-			try {
-				Thread.sleep(espera);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}	        
-	        
-		}
+		};
+		Timer timer = new Timer(5, listener);
+		timer.setRepeats(true);
+		timer.start();
 	}
 	
 	private void botones() {
