@@ -1,4 +1,4 @@
-package entidades;
+package pantalla;
 
 import java.awt.Image;
 import java.io.IOException;

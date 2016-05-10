@@ -19,9 +19,7 @@ import javax.swing.Timer;
 
 import entidades.Entidad;
 import entidades.EntidadControlable;
-import entidades.Fondo;
 import entidades.GUI;
-import entidades.Terreno;
 
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;

@@ -1,4 +1,6 @@
-package entidades;
+package pantalla;
+
+import entidades.Entidad;
 
 public class Terreno extends Entidad {
 	private Entidad monte;
