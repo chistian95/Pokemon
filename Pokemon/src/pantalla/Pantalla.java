@@ -23,9 +23,10 @@ import entidades.Terreno;
 public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 	private static final int REFRESCO = 1000;
-	private static final int WIDTH = 1280;
-	private static final int HEIGHT = 720;
+	private static final int WIDTH = 1280;	//720, 1280;
+	private static final int HEIGHT = 720;	//480, 720;
 	
+	BufferedImage bf;
 	private List<Entidad> entidades;
 	private List<GUI> guis;
 	private List<EntidadControlable> controlables;
@@ -47,6 +48,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setVisible(true);
+        bf = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
         addWindowListener(new WindowAdapter() {
         	public void windowClosing(WindowEvent e) {
         		dispose();
@@ -56,7 +58,6 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	}
 	
 	public void paint(Graphics g) {
-		BufferedImage bf = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
 		super.paint(bf.getGraphics());
 		
 		bf.getGraphics().drawImage(fondo.getCielo(), 0, 0, this.getWidth(), this.getHeight(), this);
