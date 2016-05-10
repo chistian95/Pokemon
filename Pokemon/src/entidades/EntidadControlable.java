@@ -12,7 +12,7 @@ public class EntidadControlable extends Entidad {
 	public EntidadControlable(String archivo, int x, int y) {
 		super(archivo, x, y);
 		sx = 0;
-		escala = 8;
+		escala = 7;
 		cont = 0;
 		animacion = 0;
 		pasos = 0;

@@ -1,6 +1,7 @@
 package entidades;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -8,7 +9,7 @@ import javax.imageio.ImageIO;
 public class Entidad {
 	private int x;
 	private int y;
-	private Image imagen;
+	private BufferedImage imagen;
 	
 	public Entidad(String archivo, int x, int y) {
 		String imagenUrl = "../res/"+archivo+".png";
@@ -42,14 +43,7 @@ public class Entidad {
 		return imagen;
 	}
 	
-	public void setImagen(String archivo) {
-		String imagenUrl = "../res/"+archivo+".png";
-        try {
-			imagen = ImageIO.read(getClass().getResourceAsStream(imagenUrl));
-		} catch (IOException e) {
-			System.err.println("No se ha podido cargar la imagen "+archivo);
-			e.printStackTrace();
-			System.exit(-1);
-		}
+	public void setImagen(BufferedImage imagen) {
+		this.imagen = imagen;
 	}
 }

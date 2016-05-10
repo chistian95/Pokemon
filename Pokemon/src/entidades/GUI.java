@@ -2,15 +2,19 @@ package entidades;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
 public class GUI extends Entidad {
 	
-	private String archivo;
 	private String accion;
 	private boolean pulsado;
 	private int cooldown;
+	private BufferedImage imagen_n;
+	private BufferedImage imagen_p;
 
 	public GUI(String archivo, int x, int y) {
 		this(archivo, x, y, archivo);
@@ -22,18 +26,24 @@ public class GUI extends Entidad {
 	
 	public GUI(String archivo, int x, int y, String accion, int cooldown) {
 		super(archivo, x, y);
-		this.archivo = archivo;
+		try {
+			imagen_n = ImageIO.read(getClass().getResourceAsStream("../res/"+archivo+".png"));
+			imagen_p = ImageIO.read(getClass().getResourceAsStream("../res/"+archivo+"_p.png"));
+		} catch (IOException e) {
+			System.err.println("No se ha podido cargar la imagen "+archivo);
+			e.printStackTrace();
+		}
 		this.accion = accion;
 		this.cooldown = cooldown;
 		pulsado = false;
 	}
 	
 	public void pulsar() {
-		this.setImagen(archivo+"_p");
+		this.setImagen(imagen_p);
 		pulsado = true;
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setImagen(archivo);
+				setImagen(imagen_n);
 				pulsado = false;
 			}
 		};
