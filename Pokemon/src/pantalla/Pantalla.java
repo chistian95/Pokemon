@@ -49,6 +49,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
         setLocationRelativeTo(null);
         setVisible(true);
         bf = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        bf.setAccelerationPriority(1);
         addWindowListener(new WindowAdapter() {
         	public void windowClosing(WindowEvent e) {
         		dispose();
@@ -58,15 +59,13 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	}
 	
 	public void paint(Graphics g) {
-		super.paint(bf.getGraphics());
-		
 		bf.getGraphics().drawImage(fondo.getCielo(), 0, 0, this.getWidth(), this.getHeight(), this);
-		bf.getGraphics().drawImage(fondo.getNubes(), fondo.getX(), 0, this);
+		bf.getGraphics().drawImage(fondo.getNubes(), 0, 0, this.getWidth(), this.getHeight(), fondo.getX(), 0, fondo.getX()+this.getWidth(), this.getHeight(), this);
 		fondo.moverNubes();
 		
-		bf.getGraphics().drawImage(terreno.getMontes().getImagen(), terreno.getMontes().getX(), 0, this);
-		bf.getGraphics().drawImage(terreno.getBosque().getImagen(), terreno.getBosque().getX(), 0, this);
-		bf.getGraphics().drawImage(terreno.getImagen(), terreno.getX(), 0, this);
+		bf.getGraphics().drawImage(terreno.getMontes().getImagen(), 0, 0, this.getWidth(), this.getHeight(), terreno.getMontes().getX(), 0, terreno.getMontes().getX()+this.getWidth(), this.getHeight(), this);
+		bf.getGraphics().drawImage(terreno.getBosque().getImagen(), 0, 0, this.getWidth(), this.getHeight(), terreno.getBosque().getX(), 0, terreno.getBosque().getX()+this.getWidth(), this.getHeight(), this);
+		bf.getGraphics().drawImage(terreno.getImagen(), 0, 0, this.getWidth(), this.getHeight(), terreno.getX(), 0, terreno.getX()+this.getWidth(), this.getHeight(), this);
 		
 		for(Entidad entidad : entidades) {				
 			bf.getGraphics().drawImage(entidad.getImagen(), entidad.getX(), entidad.getY(), this);
