@@ -31,9 +31,9 @@ public class Entidad {
 	}
 	
 	public Entidad(String archivo, int x, int y, double escala, Pantalla pt) {
-		String imagenUrl = "../res/"+archivo+".png";
+		String imagenUrl = "res/"+archivo+".png";
         try {
-			imagen = ImageIO.read(getClass().getResourceAsStream(imagenUrl));
+			imagen = ImageIO.read(ClassLoader.getSystemResourceAsStream(imagenUrl));
 		} catch (IOException e) {
 			System.err.println("No se ha podido cargar la imagen "+archivo);
 			e.printStackTrace();

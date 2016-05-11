@@ -15,7 +15,7 @@ public class AnimacionFinBatalla {
 		cont = 0;
 		fuente = new Font("Verdana", Font.BOLD, 32);
 		try {
-			caja = ImageIO.read(getClass().getResourceAsStream("../res/combate/contenedor.png"));
+			caja = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/combate/contenedor.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

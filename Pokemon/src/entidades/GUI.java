@@ -29,8 +29,8 @@ public class GUI extends Entidad {
 	public GUI(String archivo, int x, int y, String accion, int cooldown, Pantalla pt) {
 		super(archivo, x, y, pt);
 		try {
-			imagen_n = ImageIO.read(getClass().getResourceAsStream("../res/"+archivo+".png"));
-			imagen_p = ImageIO.read(getClass().getResourceAsStream("../res/"+archivo+"_p.png"));
+			imagen_n = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/"+archivo+".png"));
+			imagen_p = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/"+archivo+"_p.png"));
 		} catch (IOException e) {
 			System.err.println("No se ha podido cargar la imagen "+archivo);
 			e.printStackTrace();

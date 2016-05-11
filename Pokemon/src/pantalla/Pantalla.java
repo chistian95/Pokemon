@@ -124,9 +124,7 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 			bff.setColor(Color.WHITE);
 			bff.setFont(finBatalla.getFuente());
 			bff.drawString(mensaje, x, getHeight()/2);
-		}	
-		
-		if(finBatalla.getCont() >= 600) {
+		} else if(finBatalla.getCont() < 600) {
 			String mensaje = "HAS GANADO!";
 			if(combate.getPj().getVida() <= 0) {
 				mensaje = "HAS PERDIDO";
@@ -136,6 +134,7 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 			bff.setColor(Color.WHITE);
 			bff.setFont(finBatalla.getFuente());
 			bff.drawString(mensaje, x, getHeight()/2);
+		} else {
 			jg.setEstado(EstadoJuego.REINICIAR);
 		}
 		finBatalla.sumarCont();

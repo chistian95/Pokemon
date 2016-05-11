@@ -15,8 +15,8 @@ public class Fondo {
 
 	public Fondo() {
 		try {
-			cielo = ImageIO.read(getClass().getResourceAsStream("../res/fondo/cielo.png"));
-			nubes = ImageIO.read(getClass().getResourceAsStream("../res/fondo/nubes.png"));
+			cielo = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/fondo/cielo.png"));
+			nubes = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/fondo/nubes.png"));
 		} catch (IOException e) {
 			System.err.println("No se han podido cargar las imagenes de fondo");
 			e.printStackTrace();

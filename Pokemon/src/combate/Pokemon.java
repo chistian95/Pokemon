@@ -16,9 +16,9 @@ public class Pokemon {
 		this.pokemon = pokemon;		
 		try {
 			if(back) {
-				img = ImageIO.read(getClass().getResourceAsStream("../res/pokemon/back/"+pokemon+".png"));
+				img = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/pokemon/back/"+pokemon+".png"));
 			} else {
-				img = ImageIO.read(getClass().getResourceAsStream("../res/pokemon/"+pokemon+".png"));
+				img = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/pokemon/"+pokemon+".png"));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

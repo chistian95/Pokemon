@@ -39,12 +39,12 @@ public class Combate {
 		accionRival = "cuadrado";
 		this.pt = pt;
 		try {
-			fondo = ImageIO.read(getClass().getResourceAsStream("../res/combate/fondo.png"));
-			barraIzq = ImageIO.read(getClass().getResourceAsStream("../res/combate/barraIzq.png"));
-			barraDrc = ImageIO.read(getClass().getResourceAsStream("../res/combate/barraDrc.png"));
-			imgTriangulo = ImageIO.read(getClass().getResourceAsStream("../res/botones/triangulo.png"));
-			imgCuadrado = ImageIO.read(getClass().getResourceAsStream("../res/botones/cuadrado.png"));
-			imgEquis = ImageIO.read(getClass().getResourceAsStream("../res/botones/equis.png"));
+			fondo = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/combate/fondo.png"));
+			barraIzq = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/combate/barraIzq.png"));
+			barraDrc = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/combate/barraDrc.png"));
+			imgTriangulo = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/botones/triangulo.png"));
+			imgCuadrado = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/botones/cuadrado.png"));
+			imgEquis = ImageIO.read(ClassLoader.getSystemResourceAsStream("res/botones/equis.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
