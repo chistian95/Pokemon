@@ -14,9 +14,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
@@ -45,6 +53,8 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 	private AnimacionBatalla animBat;
 	private Combate combate;
 	private AnimacionFinBatalla finBatalla;
+	private Clip musicaCaminar;
+	private Clip musicaCombate;
 	
 	public Pantalla(Juego jg) {
 		this.jg = jg;
@@ -57,6 +67,8 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		animBat = null;
 		combate = null;
 		finBatalla = null;
+		musicaCaminar = null;
+		musicaCombate = null;
 		
         setUndecorated(true);
         setSize(WIDTH, HEIGHT);
@@ -135,6 +147,8 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 			bff.setFont(finBatalla.getFuente());
 			bff.drawString(mensaje, x, getHeight()/2);
 		} else {
+			musicaCombate.stop();
+			musicaCombate.close();
 			jg.setEstado(EstadoJuego.REINICIAR);
 		}
 		finBatalla.sumarCont();
@@ -237,6 +251,24 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		
 		if(animBat == null) {
 			animBat = new AnimacionBatalla(this);
+			try {
+				musicaCaminar.stop();
+				musicaCaminar.close();
+				musicaCaminar = null;
+				AudioInputStream audioStream = AudioSystem.getAudioInputStream(ClassLoader.getSystemResourceAsStream("res/audio/wild-pok-mon-battle.mid"));
+				AudioFormat formato = audioStream.getFormat();
+				DataLine.Info info = new DataLine.Info(Clip.class, formato);
+				musicaCombate = (Clip) AudioSystem.getLine(info);
+				musicaCombate.loop(0);
+				musicaCombate.open(audioStream);
+				musicaCombate.start();
+			} catch (UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (LineUnavailableException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		double escala = animBat.getCont();
@@ -266,6 +298,23 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 	}
 	
 	private void pintarMundo(Graphics g) {
+		if(musicaCaminar == null) {
+			try {
+				AudioInputStream audioStream = AudioSystem.getAudioInputStream(ClassLoader.getSystemResourceAsStream("res/audio/goldenrod-city.mid"));
+				AudioFormat formato = audioStream.getFormat();
+				DataLine.Info info = new DataLine.Info(Clip.class, formato);
+				musicaCaminar = (Clip) AudioSystem.getLine(info);
+				musicaCaminar.loop(0);
+				musicaCaminar.open(audioStream);
+				musicaCaminar.start();
+			} catch (UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (LineUnavailableException e) {
+				e.printStackTrace();
+			}
+		}
 		Graphics2D bff = (Graphics2D) bf.getGraphics();
 		bff.drawImage(fondo.getCielo(), 0, 0, this.getWidth(), this.getHeight()/3, 0, 0, this.getWidth(), this.getHeight()/3, this);
 		bff.drawImage(fondo.getNubes(), 0, 0, this.getWidth(), this.getHeight()/3, fondo.getX(), 0, fondo.getX()+this.getWidth(), this.getHeight()/3, this);
@@ -337,6 +386,8 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		animBat = null;
 		combate = null;
 		finBatalla = null;
+		musicaCaminar = null;
+		musicaCombate = null;
 		
 		GUI circulo = new GUI("botones/circulo", 0, 0, "circulo", this);
 		circulo.setX(getWidth() - circulo.getX2() -4);

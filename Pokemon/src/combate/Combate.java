@@ -14,7 +14,7 @@ import pantalla.Pantalla;
 import principal.EstadoJuego;
 
 public class Combate {
-	private static final int DIFICULTAD_VIDA = -3;
+	private static final int DIFICULTAD_VIDA = -1;
 	private static final int DIFICULTAD_ATAQUE = 200;
 	private static final int DIFICULTAD_CAMBIO = 550;
 	
