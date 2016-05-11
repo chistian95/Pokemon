@@ -20,11 +20,12 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import combate.AnimacionBatalla;
+import combate.AnimacionFinBatalla;
 import combate.Combate;
 import entidades.Entidad;
 import entidades.EntidadControlable;
 import entidades.GUI;
-import principal.AnimacionBatalla;
 import principal.EstadoJuego;
 import principal.Juego;
 
@@ -43,6 +44,7 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 	private Terreno terreno;
 	private AnimacionBatalla animBat;
 	private Combate combate;
+	private AnimacionFinBatalla finBatalla;
 	
 	public Pantalla(Juego jg) {
 		this.jg = jg;
@@ -54,6 +56,7 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		terreno = new Terreno(this);
 		animBat = null;
 		combate = null;
+		finBatalla = null;
 		
         setUndecorated(true);
         setSize(WIDTH, HEIGHT);
@@ -92,7 +95,43 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		case EstadoJuego.BATALLA:
 			pintarBatalla(g);
 			break;
+		case EstadoJuego.FIN_BATALLA:
+			pintarFinBatalla(g);
+			break;
 		}		
+	}
+	
+	private void pintarFinBatalla(Graphics g) {
+		Graphics2D bff = (Graphics2D) bf.getGraphics();
+		
+		if(finBatalla == null) {
+			finBatalla = new AnimacionFinBatalla();
+			bff.setColor(Color.BLACK);
+			bff.fillRect(0, 0, WIDTH, HEIGHT);
+		}
+		
+		bff.drawImage(combate.getFondo(), 0, 0, WIDTH, HEIGHT, this);		
+		pintarPjBatalla(bff);
+		pintarRvBatalla(bff);
+		
+		if(finBatalla.getCont() < 200) {
+			String mensaje = "HAS GANADO!";
+			if(combate.getPj().getVida() <= 0) {
+				mensaje = "HAS PERDIDO";
+			}
+			int x = getWidth()/2-(mensaje.length()/2)*22 - 200 + finBatalla.getCont();
+			bff.drawImage(finBatalla.getCaja(), x-14, getHeight()/2-60, this);
+			bff.setColor(Color.WHITE);
+			bff.setFont(finBatalla.getFuente());
+			bff.drawString(mensaje, x, getHeight()/2);
+		}	
+		
+		if(finBatalla.getCont() >= 600) {
+			jg.setEstado(EstadoJuego.REINICIAR);
+		}
+		finBatalla.sumarCont();
+		
+		g.drawImage(bf, 0, 0, null);
 	}
 	
 	private void pintarBatalla(Graphics g) {
@@ -102,6 +141,10 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		
 		pintarPjBatalla(bff);
 		pintarRvBatalla(bff);
+		
+		for(Entidad en : entidades) {
+			bff.drawImage(en.getImagen(), en.getX(), en.getY(), this);
+		}
 		
 		for(GUI gui : guis) {
 			bff.drawImage(gui.getImagen(), gui.getX(), gui.getY(), this);
@@ -127,6 +170,7 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 			combate.aumentarCont();
 		} else {			
 			getJuego().setEstado(EstadoJuego.BATALLA);
+			combate.comenzarCombate();
 		}
 		
 		g.drawImage(bf, 0, 0, null);
@@ -284,6 +328,7 @@ public class Pantalla extends JFrame implements KeyListener, MouseListener {
 		terreno = new Terreno(this);
 		animBat = null;
 		combate = null;
+		finBatalla = null;
 		
 		GUI circulo = new GUI("botones/circulo", 0, 0, "circulo", this);
 		circulo.setX(getWidth() - circulo.getX2() -4);

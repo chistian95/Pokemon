@@ -1,4 +1,4 @@
-package principal;
+package combate;
 
 import java.awt.Image;
 

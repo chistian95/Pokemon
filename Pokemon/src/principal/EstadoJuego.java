@@ -6,4 +6,5 @@ public class EstadoJuego {
 	public static final int ANIM_BATALLA = 1;
 	public static final int BATALLA_COMIENZO = 2;
 	public static final int BATALLA = 3;
+	public static final int FIN_BATALLA = 4;
 }

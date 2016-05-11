@@ -8,25 +8,43 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
+import entidades.Entidad;
 import entidades.GUI;
 import pantalla.Pantalla;
 import principal.EstadoJuego;
 
 public class Combate {
+	private static final int DIFICULTAD_VIDA = -2;
+	private static final int DIFICULTAD_ATAQUE = 250;
+	private static final int DIFICULTAD_CAMBIO = 500;
+	
 	private Pantalla pt;
 	private BufferedImage fondo;
 	private Pokemon pj;
 	private Pokemon rival;
 	private BufferedImage barraIzq;
 	private BufferedImage barraDrc;
+	private BufferedImage imgTriangulo;
+	private BufferedImage imgCuadrado;
+	private BufferedImage imgEquis;
+	private String accionRival;
+	private String accionPj;
+	private Entidad accion;
+	private Timer cambiarAtaque;
+	private Timer atacar;
 	private double comienzo;
 	
 	public Combate(Pantalla pt) {
+		accionPj = "";
+		accionRival = "cuadrado";
 		this.pt = pt;
 		try {
 			fondo = ImageIO.read(getClass().getResourceAsStream("../res/combate/fondo.png"));
 			barraIzq = ImageIO.read(getClass().getResourceAsStream("../res/combate/barraIzq.png"));
 			barraDrc = ImageIO.read(getClass().getResourceAsStream("../res/combate/barraDrc.png"));
+			imgTriangulo = ImageIO.read(getClass().getResourceAsStream("../res/botones/triangulo.png"));
+			imgCuadrado = ImageIO.read(getClass().getResourceAsStream("../res/botones/cuadrado.png"));
+			imgEquis = ImageIO.read(getClass().getResourceAsStream("../res/botones/equis.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -37,18 +55,45 @@ public class Combate {
 	}
 	
 	public void lanzarAtaque(String accion) {
-		rival.cambiarVida(-1);
+		accionPj = accion;
+		if(accionPj.equals(accionRival)) {
+			rival.cambiarVida(DIFICULTAD_VIDA);
+		}			
 	}
 	
 	public void comenzarCombate() {
-		ActionListener listener = new ActionListener() {
+		ActionListener listenerCambiarAtaque = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				int rnd = (int) (Math.random()*3);
+				switch(rnd) {
+				case 0:
+					accionRival = "triangulo";
+					accion.setImagen(imgTriangulo);
+					break;
+				case 1:
+					accionRival = "cuadrado";
+					accion.setImagen(imgCuadrado);
+					break;
+				case 2:
+					accionRival = "equis";
+					accion.setImagen(imgEquis);
+					break;
+				}
 			}
 		};
-		Timer timer = new Timer(100, listener);
-		timer.setRepeats(true);
-		timer.start();
+		ActionListener listenerAtaque = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!accionRival.equals(accionPj)) {
+					pj.cambiarVida(DIFICULTAD_VIDA);
+				}
+			}
+		};
+		cambiarAtaque = new Timer(DIFICULTAD_CAMBIO, listenerCambiarAtaque);
+		cambiarAtaque.setRepeats(true);
+		cambiarAtaque.start();
+		atacar = new Timer(DIFICULTAD_ATAQUE, listenerAtaque);
+		atacar.setRepeats(true);
+		atacar.start();
 	}
 	
 	private void ponerBotones() {
@@ -64,10 +109,17 @@ public class Combate {
 		pt.meterGUI(cuadrado);
 		pt.meterGUI(triangulo);
 		pt.meterGUI(equis);
+		
+		double x = pt.getWidth() - 100;
+		double y = 100;
+		accion = new Entidad("botones/cuadrado", (int) x, (int) y, pt);
+		pt.meterEntidad(accion);
 	}
 	
 	public void terminar() {		
-		pt.getJuego().setEstado(EstadoJuego.REINICIAR);
+		cambiarAtaque.stop();
+		atacar.stop();
+		pt.getJuego().setEstado(EstadoJuego.FIN_BATALLA);
 	}
 
 	public void aumentarCont() {
