@@ -85,10 +85,23 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		case EstadoJuego.ANIM_BATALLA:
 			pintarBatallaAnimacion(g);
 			break;
-		case EstadoJuego.BATALLA:
+		case EstadoJuego.BATALLA_COMIENZO:
 			pintarBatallaComienzo(g);
 			break;
+		case EstadoJuego.BATALLA:
+			pintarBatalla(g);
+			break;
 		}		
+	}
+	
+	private void pintarBatalla(Graphics g) {
+		Graphics2D bff = (Graphics2D) bf.getGraphics();
+		
+		for(GUI gui : guis) {
+			bff.drawImage(gui.getImagen(), gui.getX(), gui.getY(), this);
+		}
+		
+		g.drawImage(bf, 0, 0, null);
 	}
 	
 	private void pintarBatallaComienzo(Graphics g) {
@@ -145,6 +158,8 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		
 		if(combate.getComienzo() <= 100) {
 			combate.aumentarCont();
+		} else {
+			getJuego().setEstado(EstadoJuego.BATALLA);
 		}
 		
 		g.drawImage(bf, 0, 0, null);
@@ -177,7 +192,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		}
 		if(escala >= 3) {
 			animBat = null;
-			jg.setEstado(EstadoJuego.BATALLA);
+			jg.setEstado(EstadoJuego.BATALLA_COMIENZO);
 		}
 		
 		g.drawImage(bf, 0, 0, null);
