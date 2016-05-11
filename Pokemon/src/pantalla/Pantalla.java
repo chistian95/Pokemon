@@ -20,11 +20,11 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import combate.Combate;
 import entidades.Entidad;
 import entidades.EntidadControlable;
 import entidades.GUI;
 import principal.AnimacionBatalla;
-import principal.Combate;
 import principal.EstadoJuego;
 import principal.Juego;
 
@@ -102,22 +102,22 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		
 		double escala = 4;
 		AffineTransform afPj = new AffineTransform();
-		afPj.translate((-100+combate.getComienzo()), HEIGHT - (combate.getPj().getHeight(null)*escala) + 100);
+		afPj.translate((-100+combate.getComienzo()), HEIGHT - (combate.getPj().getImg().getHeight(null)*escala) + 100);
 		afPj.scale(escala, escala);
-		bff.drawImage(combate.getPj(), afPj, this);
+		bff.drawImage(combate.getPj().getImg(), afPj, this);
 		
 		escala = 2;
 		AffineTransform afRv = new AffineTransform();
-		afRv.translate(WIDTH-(combate.getRival().getWidth(null)*escala) - 50 + (100-combate.getComienzo()), combate.getRival().getHeight(null) - 25);
+		afRv.translate(WIDTH-(combate.getRival().getImg().getWidth()*escala) - 50 + (100-combate.getComienzo()), combate.getRival().getImg().getHeight() - 25);
 		afRv.scale(escala, escala);
-		bff.drawImage(combate.getRival(), afRv, this);
+		bff.drawImage(combate.getRival().getImg(), afRv, this);
 		
 		escala = 0.35;
 		AffineTransform afBarraIzq = new AffineTransform();
 		afBarraIzq.translate(combate.getComienzo()-100, 75);
 		afBarraIzq.scale(escala, escala);
 		
-		int vida = combate.getVidaPj();
+		int vida = combate.getPj().getVida();
 		int verde = 255 - (100 - vida)*2;
 		int rojo = 255 - verde/2;
 		bff.setColor(new Color(rojo, verde, 0, 255));
@@ -132,7 +132,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		afBarraDrc.translate(WIDTH-(combate.getBarraDrc().getWidth()*escala) + (100-combate.getComienzo()), HEIGHT-200);
 		afBarraDrc.scale(escala, escala);
 		
-		vida = combate.getVidaEnemigo();
+		vida = combate.getRival().getVida();
 		verde = 255 - (100 - vida)*2;
 		rojo = 255 - verde/2;
 		bff.setColor(new Color(rojo, verde, 0, 255));
