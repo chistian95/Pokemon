@@ -112,6 +112,37 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		afRv.scale(escala, escala);
 		bff.drawImage(combate.getRival(), afRv, this);
 		
+		escala = 0.35;
+		AffineTransform afBarraIzq = new AffineTransform();
+		afBarraIzq.translate(combate.getComienzo()-100, 75);
+		afBarraIzq.scale(escala, escala);
+		
+		int vida = combate.getVidaPj();
+		int verde = 255 - (100 - vida)*2;
+		int rojo = 255 - verde/2;
+		bff.setColor(new Color(rojo, verde, 0, 255));
+		int x1 = (int) combate.getComienzo()-100 + 25;
+		int y1 = 75 + 10;
+		int x2 = (int) (combate.getBarraIzq().getWidth()*escala) - 45 - (int) ((100-vida)*2.2);
+		int y2 = 15;
+		bff.fillRect(x1, y1, x2, y2);
+		bff.drawImage(combate.getBarraIzq(), afBarraIzq, this);
+		
+		AffineTransform afBarraDrc = new AffineTransform();
+		afBarraDrc.translate(WIDTH-(combate.getBarraDrc().getWidth()*escala) + (100-combate.getComienzo()), HEIGHT-200);
+		afBarraDrc.scale(escala, escala);
+		
+		vida = combate.getVidaEnemigo();
+		verde = 255 - (100 - vida)*2;
+		rojo = 255 - verde/2;
+		bff.setColor(new Color(rojo, verde, 0, 255));
+		x1 = (int) (WIDTH-(combate.getBarraDrc().getWidth()* escala) + (100-combate.getComienzo())) + 25 + (int) ((100-vida)*2.2);
+		y1 = HEIGHT-200 + 10;
+		x2 = (int) (combate.getBarraDrc().getWidth()*escala) - 45 - (int) ((100-vida)*2.2);
+		y2 = 15;
+		bff.fillRect(x1, y1, x2, y2);
+		bff.drawImage(combate.getBarraDrc(), afBarraDrc, this);
+		
 		if(combate.getComienzo() <= 100) {
 			combate.aumentarCont();
 		}
