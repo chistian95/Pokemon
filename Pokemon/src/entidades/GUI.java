@@ -45,8 +45,8 @@ public class GUI extends Entidad {
 		pulsado = true;
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setImagen(imagen_n);
 				pulsado = false;
+				setImagen(imagen_n);				
 			}
 		};
 		Timer timer = new Timer(cooldown, listener);
@@ -58,7 +58,7 @@ public class GUI extends Entidad {
 		return accion;
 	}
 	
-	public boolean getPulsado() {
+	public boolean isPulsado() {
 		return pulsado;
 	}
 	

@@ -1,6 +1,7 @@
 package entidades;
 
 import pantalla.Pantalla;
+import principal.EstadoJuego;
 
 public class EntidadControlable extends Entidad {
 	private static final int VELOCIDAD = 10;
@@ -41,7 +42,7 @@ public class EntidadControlable extends Entidad {
 					pararAnimacion();
 					enemigoSpawneado = false;
 					getPantalla().quitarEntidad(enemigo);
-					getPantalla().getJuego().setEstado(1);
+					getPantalla().getJuego().setEstado(EstadoJuego.ANIM_BATALLA);
 				}
 			}
 		}

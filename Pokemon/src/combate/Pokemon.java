@@ -8,9 +8,11 @@ import javax.imageio.ImageIO;
 public class Pokemon {
 	String pokemon;
 	BufferedImage img;
+	Combate combate;
 	private int vida;
 	
-	public Pokemon(String pokemon, boolean back) {
+	public Pokemon(String pokemon, boolean back, Combate combate) {
+		this.combate = combate;
 		this.pokemon = pokemon;		
 		try {
 			if(back) {
@@ -32,6 +34,7 @@ public class Pokemon {
 		vida += n;
 		if(vida < 0) {
 			vida = 0;
+			combate.terminar();
 		} else if(vida > 100) {
 			vida = 100;
 		}

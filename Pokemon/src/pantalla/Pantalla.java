@@ -28,7 +28,7 @@ import principal.AnimacionBatalla;
 import principal.EstadoJuego;
 import principal.Juego;
 
-public class Pantalla extends JFrame implements Runnable, KeyListener, MouseListener {
+public class Pantalla extends JFrame implements KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 720;	//720, 1280;
 	private static final int HEIGHT = 480;	//480, 720;
@@ -77,7 +77,8 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	
 	public void paint(Graphics g) {
 		switch(jg.getEstado()) {
-		case EstadoJuego.PARADO:
+		case EstadoJuego.REINICIAR:
+			reiniciarJuego(g);
 			break;
 		case EstadoJuego.MUNDO:
 			pintarMundo(g);
@@ -97,6 +98,11 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 	private void pintarBatalla(Graphics g) {
 		Graphics2D bff = (Graphics2D) bf.getGraphics();
 		
+		bff.drawImage(combate.getFondo(), 0, 0, WIDTH, HEIGHT, this);
+		
+		pintarPjBatalla(bff);
+		pintarRvBatalla(bff);
+		
 		for(GUI gui : guis) {
 			bff.drawImage(gui.getImagen(), gui.getX(), gui.getY(), this);
 		}
@@ -108,18 +114,50 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		Graphics2D bff = (Graphics2D) bf.getGraphics();
 		
 		if(combate == null) {
-			combate = new Combate();
+			guis = new ArrayList<GUI>();
+			combate = new Combate(this);			
 		}
 		
 		bff.drawImage(combate.getFondo(), 0, 0, WIDTH, HEIGHT, this);
 		
+		pintarPjBatalla(bff);	
+		pintarRvBatalla(bff);
+		
+		if(combate.getComienzo() <= 100) {
+			combate.aumentarCont();
+		} else {			
+			getJuego().setEstado(EstadoJuego.BATALLA);
+		}
+		
+		g.drawImage(bf, 0, 0, null);
+	}
+	
+	private void pintarPjBatalla(Graphics2D bff) {
 		double escala = 4;
 		AffineTransform afPj = new AffineTransform();
 		afPj.translate((-100+combate.getComienzo()), HEIGHT - (combate.getPj().getImg().getHeight(null)*escala) + 100);
 		afPj.scale(escala, escala);
 		bff.drawImage(combate.getPj().getImg(), afPj, this);
 		
-		escala = 2;
+		escala = 0.35;
+		AffineTransform afBarraDrc = new AffineTransform();
+		afBarraDrc.translate(WIDTH-(combate.getBarraDrc().getWidth()*escala) + (100-combate.getComienzo()), HEIGHT-200);
+		afBarraDrc.scale(escala, escala);
+		
+		int vida = combate.getPj().getVida();
+		int verde = 255 - (100 - vida)*2;
+		int rojo = 255 - verde/2;
+		bff.setColor(new Color(rojo, verde, 0, 255));
+		int x1 = (int) (WIDTH-(combate.getBarraDrc().getWidth()* escala) + (100-combate.getComienzo())) + 25 + (int) ((100-vida)*2.2);
+		int y1 = HEIGHT-200 + 10;
+		int x2 = (int) (combate.getBarraDrc().getWidth()*escala) - 45 - (int) ((100-vida)*2.2);
+		int y2 = 15;
+		bff.fillRect(x1, y1, x2, y2);
+		bff.drawImage(combate.getBarraDrc(), afBarraDrc, this);
+	}
+	
+	private void pintarRvBatalla(Graphics2D bff) {
+		double escala = 2;
 		AffineTransform afRv = new AffineTransform();
 		afRv.translate(WIDTH-(combate.getRival().getImg().getWidth()*escala) - 50 + (100-combate.getComienzo()), combate.getRival().getImg().getHeight() - 25);
 		afRv.scale(escala, escala);
@@ -130,7 +168,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		afBarraIzq.translate(combate.getComienzo()-100, 75);
 		afBarraIzq.scale(escala, escala);
 		
-		int vida = combate.getPj().getVida();
+		int vida = combate.getRival().getVida();
 		int verde = 255 - (100 - vida)*2;
 		int rojo = 255 - verde/2;
 		bff.setColor(new Color(rojo, verde, 0, 255));
@@ -140,29 +178,6 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		int y2 = 15;
 		bff.fillRect(x1, y1, x2, y2);
 		bff.drawImage(combate.getBarraIzq(), afBarraIzq, this);
-		
-		AffineTransform afBarraDrc = new AffineTransform();
-		afBarraDrc.translate(WIDTH-(combate.getBarraDrc().getWidth()*escala) + (100-combate.getComienzo()), HEIGHT-200);
-		afBarraDrc.scale(escala, escala);
-		
-		vida = combate.getRival().getVida();
-		verde = 255 - (100 - vida)*2;
-		rojo = 255 - verde/2;
-		bff.setColor(new Color(rojo, verde, 0, 255));
-		x1 = (int) (WIDTH-(combate.getBarraDrc().getWidth()* escala) + (100-combate.getComienzo())) + 25 + (int) ((100-vida)*2.2);
-		y1 = HEIGHT-200 + 10;
-		x2 = (int) (combate.getBarraDrc().getWidth()*escala) - 45 - (int) ((100-vida)*2.2);
-		y2 = 15;
-		bff.fillRect(x1, y1, x2, y2);
-		bff.drawImage(combate.getBarraDrc(), afBarraDrc, this);
-		
-		if(combate.getComienzo() <= 100) {
-			combate.aumentarCont();
-		} else {
-			getJuego().setEstado(EstadoJuego.BATALLA);
-		}
-		
-		g.drawImage(bf, 0, 0, null);
 	}
 	
 	private void pintarBatallaAnimacion(Graphics g) {
@@ -244,8 +259,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		g.drawImage(bf, 0, 0, null);
 	}
 	
-	@Override
-	public void run() {
+	public void comenzar() {
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				botones();
@@ -257,11 +271,35 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		timer.start();
 	}
 	
+	private void reiniciarJuego(Graphics g) {		
+		Graphics2D bff = (Graphics2D) bf.getGraphics();
+		bff.setColor(Color.BLACK);
+		bff.fillRect(0, 0, WIDTH, HEIGHT);
+		g.drawImage(bf, 0, 0, null);
+		entidades = new ArrayList<Entidad>();
+		guis = new ArrayList<GUI>();
+		controlables = new ArrayList<EntidadControlable>();
+		raton = new boolean[2];
+		fondo = new Fondo();
+		terreno = new Terreno(this);
+		animBat = null;
+		combate = null;
+		
+		GUI circulo = new GUI("botones/circulo", 0, 0, "circulo", this);
+		circulo.setX(getWidth() - circulo.getX2() -4);
+		circulo.setY(getHeight() - circulo.getY2() -4);
+		meterGUI(circulo);
+		
+		EntidadControlable pj = new EntidadControlable("sprites/pj", getWidth()/2, getHeight()-100, this);	
+		meterEntidadControlable(pj);
+		jg.setEstado(EstadoJuego.MUNDO);
+	}
+	
 	private void botones() {
 		if(raton[0]) {
 			Point posicion = this.getMousePosition();
 			for(GUI gui : guis) {
-				if(!gui.getPulsado() && posicion.getX() >= gui.getX() && posicion.getX() <= gui.getX2() && posicion.getY() >= gui.getY() && posicion.getY() <= gui.getY2()) {
+				if(!gui.isPulsado() && posicion.getX() >= gui.getX() && posicion.getX() <= gui.getX2() && posicion.getY() >= gui.getY() && posicion.getY() <= gui.getY2()) {
 					gui.pulsar();
 					accionBoton(gui);
 				}
@@ -279,6 +317,16 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 					}				
 				}
 			}			
+		} else if(jg.getEstado() == EstadoJuego.BATALLA) {
+			int cont = 0;
+			for(GUI gui : guis) {
+				if(gui.isPulsado()) {
+					cont++;
+				}
+			}
+			if(cont <= 1) {
+				combate.lanzarAtaque(boton.getAccion());
+			}
 		}
 	}
 
@@ -296,7 +344,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		if(e.getKeyCode() == KeyEvent.VK_W) {
 			for(GUI gui : guis) {
 				if(gui.getAccion().equals("triangulo")) {
-					if(!gui.getPulsado()) {
+					if(!gui.isPulsado()) {
 						gui.pulsar();
 						accionBoton(gui);
 					}
@@ -307,7 +355,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		if(e.getKeyCode() == KeyEvent.VK_A) {
 			for(GUI gui : guis) {
 				if(gui.getAccion().equals("cuadrado")) {
-					if(!gui.getPulsado()) {
+					if(!gui.isPulsado()) {
 						gui.pulsar();
 						accionBoton(gui);
 					}
@@ -318,7 +366,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		if(e.getKeyCode() == KeyEvent.VK_D) {
 			for(GUI gui : guis) {
 				if(gui.getAccion().equals("equis")) {
-					if(!gui.getPulsado()) {
+					if(!gui.isPulsado()) {
 						gui.pulsar();
 						accionBoton(gui);
 					}
@@ -329,7 +377,7 @@ public class Pantalla extends JFrame implements Runnable, KeyListener, MouseList
 		if(e.getKeyCode() == KeyEvent.VK_L) {
 			for(GUI gui : guis) {
 				if(gui.getAccion().equals("circulo")) {
-					if(!gui.getPulsado()) {
+					if(!gui.isPulsado()) {
 						gui.pulsar();
 						accionBoton(gui);
 					}
